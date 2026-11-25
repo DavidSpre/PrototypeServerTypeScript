@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
   },
   "keywords": [],
   "author": "",
@@ -29,8 +33,11 @@
     "pg": "^8.23.1"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^6.0.1",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "1.0.0-rc.6",
+    "oxfmt": "^0.80.0",
+    "oxlint": "^1.95.0",
     "tsx": "^4.23.15"
   }
 }
