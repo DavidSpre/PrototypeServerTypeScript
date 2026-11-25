@@ -71,12 +71,12 @@ Berechtigung zum Ändern vom Linux-Owner und von der Linux-Group (s.u.).
     # Windows
     cd extras\compose\postgres
     docker run -v pg_init:/init -v pg_tablespace:/tablespace -v ./init:/tmp/init:ro `
-      --rm -it -u 0 --entrypoint '' dhi.io/postgres:19.0-debian13 /bin/bash
+      --rm -it -u 0 --entrypoint '' postgres:19.0-trixie /bin/bash
 
     # macOS
     cd extras/compose/postgres
     docker run -v pg_init:/init -v pg_tablespace:/tablespace -v ./init:/tmp/init:ro \
-    --rm -it -u 0 --entrypoint '' dhi.io/postgres:19.0-debian13 /bin/bash
+    --rm -it -u 0 --entrypoint '' postgres:19.0-trixie /bin/bash
 ```
 
 Um die SQL-Skripte sowie Zertifikat und privater Schlüssel für TLS aus dem
@@ -99,12 +99,23 @@ der Owner und die Gruppe auf `postgres` gesetzt sowie die Zugriffsrechte auf Okt
     exit
 ```
 
+## Einschub: Fehlerbehebung
+
+Der PostgreSQL-Server wirft im *Docker-Image* momentan noch einen Fehler, wenn dieser gestartet wird. Grund ist, dass das Volume noch nicht dem PostgreSQL-Nutzer gehört, wodurch `initdb` die Rechte nicht ändern kann. Dies wird über den folgenden Befehl behoben.
+
+```shell
+
+docker run --rm --user 0:0 --volume pg_data:/var/lib/postgresql/19/docker --entrypoint bash postgres:19.0-trixie -c "chown -R postgres:postgres /var/lib/postgresql/19/docker"
+```
+
+Nun kann das *Image* wie im nächsten Schritt gestartet werden.
+
 ## Installation ohne TLS
 
 Für _TLS_ erwartet _PostgreSQL_ standardmäßig die Dateien `server.crt` und
-`server.key` im Verzeichnis `/var/lib/postgresql/19/data`, was aber zu Beginn
+`server.key` im Verzeichnis `/var/lib/postgresql/19/docker`, was aber zu Beginn
 der Installation leer sein muss. Deshalb wird der PostgreSQL-Server zunächst
-ohne TLS gestartet, damit `/var/lib/postgresql/19/data` initialisiert wird.
+ohne TLS gestartet, damit `/var/lib/postgresql/19/docker` initialisiert wird.
 
 Dazu muss in `compose.yml` temporär der Schlüssel `command: ...` mit den
 nachfolgenden Zeilen für die Listenelemente auskommentiert werden. Danach
@@ -117,13 +128,13 @@ wird der PostgreSQL-Server als _Docker-Container_ gestartet.
 
 Nachdem in der ersten Shell der Server erfolgreich gestartet und initialisiert
 ist, werden `server.crt` und `server.key` aus dem Named Volume `pg_init`, d.h.
-aus dem Verzeichnis `/init/tls`, in das Verzeichnis `/var/lib/postgresql/19/data`
+aus dem Verzeichnis `/init/tls`, in das Verzeichnis `/var/lib/postgresql/19/docker`
 kopiert. Danach wird der Server bzw. Container wieder heruntergefahren, da er
 noch ohne TLS läuft.
 
 ```shell
     # in der 2. Shell
-    docker compose exec postgres bash -c 'cp /init/tls/* /var/lib/postgresql/19/data'
+    docker compose exec postgres bash -c 'cp /init/tls/* /var/lib/postgresql/19/docker'
     docker compose down
 ```
 
