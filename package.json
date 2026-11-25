@@ -17,5 +17,15 @@
     }
   },
   "packageManager": "pnpm@12.21.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "drizzle-orm": "1.0.0-rc.6",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "1.0.0-rc.6",
+    "tsx": "^4.23.15"
+  }
 }
