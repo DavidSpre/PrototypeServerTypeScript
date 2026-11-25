@@ -1,0 +1,814 @@
+{
+  "type": "base",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "6b6d04aa-6959-4816-a729-5657e0b8d3bc",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_schema",
+      "statementTarget": [
+        "schema",
+        "buch"
+      ],
+      "writes": [
+        "s|sch|buch",
+        "n|sch|buch",
+        "e|sch|buch"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "buch",
+        "buchart"
+      ],
+      "writes": [
+        "s|enum|buch.buchart",
+        "n|enum|buch.buchart",
+        "e|enum|buch.buchart",
+        "n|type|buch.buchart"
+      ],
+      "reads": [
+        "n|sch|buch"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "buch",
+        "abbildung"
+      ],
+      "writes": [
+        "s|tbl|buch.abbildung",
+        "n|tbl|buch.abbildung",
+        "e|tbl|buch.abbildung",
+        "n|rel|buch.abbildung",
+        "n|type|buch.abbildung",
+        "n|rel|buch.abbildung_pkey"
+      ],
+      "reads": [
+        "n|sch|buch"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "buch",
+        "buch"
+      ],
+      "writes": [
+        "s|tbl|buch.buch",
+        "n|tbl|buch.buch",
+        "e|tbl|buch.buch",
+        "n|rel|buch.buch",
+        "n|type|buch.buch",
+        "n|rel|buch.buch_pkey",
+        "n|rel|buch.buch_isbn_key"
+      ],
+      "reads": [
+        "n|sch|buch",
+        "n|enum|buch.buchart"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "buch",
+        "buch_file"
+      ],
+      "writes": [
+        "s|tbl|buch.buch_file",
+        "n|tbl|buch.buch_file",
+        "e|tbl|buch.buch_file",
+        "n|rel|buch.buch_file",
+        "n|type|buch.buch_file",
+        "n|rel|buch.buch_file_pkey",
+        "n|rel|buch.buch_file_buch_id_key"
+      ],
+      "reads": [
+        "n|sch|buch"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "buch",
+        "titel"
+      ],
+      "writes": [
+        "s|tbl|buch.titel",
+        "n|tbl|buch.titel",
+        "e|tbl|buch.titel",
+        "n|rel|buch.titel",
+        "n|type|buch.titel",
+        "n|rel|buch.titel_pkey",
+        "n|rel|buch.titel_buch_id_key"
+      ],
+      "reads": [
+        "n|sch|buch"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "buch",
+        "abbildung",
+        "abbildung_buch_id_idx"
+      ],
+      "writes": [
+        "s|idx|buch.abbildung_buch_id_idx",
+        "n|idx|buch.abbildung_buch_id_idx",
+        "e|idx|buch.abbildung_buch_id_idx",
+        "n|rel|buch.abbildung_buch_id_idx"
+      ],
+      "reads": [
+        "n|tbl|buch.abbildung",
+        "n|sch|buch",
+        "n|col|buch.abbildung.buch_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "buch",
+        "buch_file",
+        "buch_file_buch_id_idx"
+      ],
+      "writes": [
+        "s|idx|buch.buch_file_buch_id_idx",
+        "n|idx|buch.buch_file_buch_id_idx",
+        "e|idx|buch.buch_file_buch_id_idx",
+        "n|rel|buch.buch_file_buch_id_idx"
+      ],
+      "reads": [
+        "n|tbl|buch.buch_file",
+        "n|sch|buch",
+        "n|col|buch.buch_file.buch_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "buch",
+        "titel"
+      ],
+      "writes": [
+        "s|fk|buch.titel.titel_buch_id_fkey",
+        "n|fk|buch.titel.titel_buch_id_fkey",
+        "e|fk|buch.titel.titel_buch_id_fkey",
+        "n|con|buch.titel.titel_buch_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|buch.titel",
+        "n|sch|buch",
+        "n|tbl|buch.buch",
+        "n|sch|buch",
+        "n|col|buch.titel.buch_id",
+        "n|col|buch.buch.id",
+        "e|uniqueness|buch.buch.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "buch",
+        "abbildung"
+      ],
+      "writes": [
+        "s|fk|buch.abbildung.abbildung_buch_id_fkey",
+        "n|fk|buch.abbildung.abbildung_buch_id_fkey",
+        "e|fk|buch.abbildung.abbildung_buch_id_fkey",
+        "n|con|buch.abbildung.abbildung_buch_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|buch.abbildung",
+        "n|sch|buch",
+        "n|tbl|buch.buch",
+        "n|sch|buch",
+        "n|col|buch.abbildung.buch_id",
+        "n|col|buch.buch.id",
+        "e|uniqueness|buch.buch.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "buch",
+        "buch_file"
+      ],
+      "writes": [
+        "s|fk|buch.buch_file.buch_file_buch_id_fkey",
+        "n|fk|buch.buch_file.buch_file_buch_id_fkey",
+        "e|fk|buch.buch_file.buch_file_buch_id_fkey",
+        "n|con|buch.buch_file.buch_file_buch_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|buch.buch_file",
+        "n|sch|buch",
+        "n|tbl|buch.buch",
+        "n|sch|buch",
+        "n|col|buch.buch_file.buch_id",
+        "n|col|buch.buch.id",
+        "e|uniqueness|buch.buch.id"
+      ]
+    }
+  ],
+  "ddl": [
+    {
+      "name": "buch",
+      "entityType": "schemas"
+    },
+    {
+      "schema": "buch",
+      "name": "abbildung",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "buch",
+      "name": "buch",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "buch",
+      "name": "buch_file",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "buch",
+      "name": "titel",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "buch",
+      "name": "buchart",
+      "values": [
+        "EPUB",
+        "HARDCOVER",
+        "PAPERBACK"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "buch_id_seq",
+        "increment": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "startWith": "1000",
+        "cycle": false,
+        "cache": 1
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "titel_id_seq",
+        "increment": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "startWith": "1000",
+        "cycle": false,
+        "cache": 1
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "abbildung_id_seq",
+        "increment": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "startWith": "1000",
+        "cycle": false,
+        "cache": 1
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "buch_file_id_seq",
+        "increment": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "startWith": "1000",
+        "cycle": false,
+        "cache": 1
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "version",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "0",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "beschriftung",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "data",
+      "type": "bytea",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "titel",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "content_type",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "isbn",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "filename",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "untertitel",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "rating",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "buch_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "mimetype",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "buch_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "art",
+      "type": "buchart",
+      "typeSchema": "buch",
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "buch_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "preis",
+      "type": "numeric(8,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "rabatt",
+      "type": "numeric(4,3)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "lieferbar",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "datum",
+      "type": "date",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "homepage",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "schlagwoerter",
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "erzeugt",
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "aktualisiert",
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "abbildung_buch_id_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null,
+          "isExpression": false,
+          "value": "buch_id"
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "buch_file_buch_id_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null,
+          "isExpression": false,
+          "value": "buch_id"
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "titel_buch_id_fkey",
+      "nameExplicit": true,
+      "columns": [
+        "buch_id"
+      ],
+      "schemaTo": "buch",
+      "tableTo": "buch",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "abbildung_buch_id_fkey",
+      "nameExplicit": true,
+      "columns": [
+        "buch_id"
+      ],
+      "schemaTo": "buch",
+      "tableTo": "buch",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "buch_file_buch_id_fkey",
+      "nameExplicit": true,
+      "columns": [
+        "buch_id"
+      ],
+      "schemaTo": "buch",
+      "tableTo": "buch",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "buch_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": true,
+      "entityType": "pks"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "titel_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": true,
+      "entityType": "pks"
+    },
+    {
+      "schema": "buch",
+      "table": "abbildung",
+      "name": "abbildung_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": true,
+      "entityType": "pks"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "buch_file_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": true,
+      "entityType": "pks"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "buch_isbn_key",
+      "nameExplicit": true,
+      "columns": [
+        "isbn"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "buch",
+      "table": "titel",
+      "name": "titel_buch_id_key",
+      "nameExplicit": true,
+      "columns": [
+        "buch_id"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "buch",
+      "table": "buch_file",
+      "name": "buch_file_buch_id_key",
+      "nameExplicit": true,
+      "columns": [
+        "buch_id"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "buch",
+      "table": "buch",
+      "name": "buch_rating_check",
+      "value": "((rating >= 0) AND (rating <= 5))",
+      "entityType": "checks"
+    }
+  ]
+}

@@ -30,7 +30,7 @@ export default defineConfig({
     dbCredentials: {
         url: DATABASE_URL,
     },
-    schemaFilter: ['patient'],
+    schemaFilter: ['buch'],
     out: './drizzle',
 
     // fuer Drizzle Studio
