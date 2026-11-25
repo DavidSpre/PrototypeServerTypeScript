@@ -14,16 +14,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Aufruf:   docker compose up
-#           docker compose exec postgres bash -c "cp /init/tls/* /var/lib/postgresql/18/data"
+#           docker compose exec db bash -c "cp /init/tls/* /var/lib/postgresql/18/data"
 #           docker compose down
 
 # https://github.com/compose-spec/compose-spec/blob/master/schema/compose-spec.json
 
----
 services:
   postgres:
     # https://github.com/docker-library/postgres/blob/master/19/trixie/Dockerfile
-    image: postgres:19beta4-trixie
+    image: postgres:19rc1-trixie
     ports:
       - published: 5432
         target: 5432
@@ -36,11 +35,9 @@ services:
     # ggf. "-c max_connections=10" statt 100
     #command: ["--ssl=on"]
     command:
-      [
-        "--ssl=on",
-        "--ssl-cert-file=/var/lib/postgresql/19/docker/server.crt",
-        "--ssl-key-file=/var/lib/postgresql/19/docker/server.key",
-      ]
+      - "--ssl=on"
+      - "--ssl-cert-file=/var/lib/postgresql/19/docker/server.crt"
+      - "--ssl-key-file=/var/lib/postgresql/19/docker/server.key"
     volumes:
       # Image:   dhi.io/postgres:VERSION
       #- pg_data:/var/lib/postgresql/19/data
@@ -70,6 +67,8 @@ services:
     # https://man7.org/linux/man-pages/man7/capabilities.7.html
     # https://linux.die.net/man/7/capabilities
     cap_drop: [ALL]
+    # https://docs.docker.com/reference/compose-file/services/#cap_add
+    #cap_add: [CHOWN, SETGID, SETUID, DAC_READ_SEARCH, NET_BIND_SERVICE, FOWNER]
     healthcheck:
       test: [CMD, pg_isready, --dbname=postgres, --username=postgres]
       interval: 5s

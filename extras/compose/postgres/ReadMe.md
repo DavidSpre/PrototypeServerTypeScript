@@ -1,7 +1,7 @@
 # Hinweise zur Installation und Konfiguration von PostgreSQL
 
 <!--
-  Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
+  Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 - [Named Volumes erstellen](#named-volumes-erstellen)
 - [Named Volumes initialisieren](#named-volumes-initialisieren)
 - [Installation ohne TLS](#installation-ohne-tls)
-- [Datenbank, Datenbank-User und Schema anlegen](#datenbank-datenbank-user-und-schema-anlegen)
+- [Datenbank, Datenbank-User, Schema, Tabellen und Daten anlegen](#datenbank-datenbank-user-schema-tabellen-und-daten-anlegen)
 - [Ausgewählte Administrationskommandos für PostgreSQL](#ausgewählte-administrationskommandos-für-postgresql)
 - [Optional: TLS für den PostgreSQL-Server mit OpenSSL überprüfen](#optional-tls-für-den-postgresql-server-mit-openssl-überprüfen)
 - [Erweiterung PostgreSQL für VS Code](#erweiterung-postgresql-für-vs-code)
@@ -71,27 +71,27 @@ Berechtigung zum Ändern vom Linux-Owner und von der Linux-Group (s.u.).
     # Windows
     cd extras\compose\postgres
     docker run -v pg_init:/init -v pg_tablespace:/tablespace -v ./init:/tmp/init:ro `
-      --rm -it -u 0 --entrypoint '' postgres:19beta4-trixie /bin/bash
+      --rm -it -u 0 --entrypoint '' dhi.io/postgres:19.0-debian13 /bin/bash
 
     # macOS
     cd extras/compose/postgres
     docker run -v pg_init:/init -v pg_tablespace:/tablespace -v ./init:/tmp/init:ro \
-    --rm -it -u 0 --entrypoint '' postgres:19beta4-trixie /bin/bash
+    --rm -it -u 0 --entrypoint '' dhi.io/postgres:19.0-debian13 /bin/bash
 ```
 
 Um die SQL-Skripte sowie Zertifikat und privater Schlüssel für TLS aus dem
-Original-Verzeichnis `init\patient\sql` bzw. `init\patient\tls` in das Named Volume
+Original-Verzeichnis `init\buch\sql` bzw. `init\buch\tls` in das Named Volume
 `pg_init` kopieren zu können, wurde das lokale Verzeichnis `.\init` in `/tmp/init`
 bereitgestellt. In der _bash_ werden deshalb die SQL-Skripte sowie Zertifikat und
 privater Schlüssel aus dem Verzeichnis `/tmp/init` nach `/init` und deshalb in
-das Named Volume `pg_init` kopiert. Danach wird das Verzeichnis `/tablespace/patient`
+das Named Volume `pg_init` kopiert. Danach wird das Verzeichnis `/tablespace/buch`
 angelegt, welches im Named Volume `pg_tablespace` liegt. Jetzt wird bei den Dateien
 der Owner und die Gruppe auf `postgres` gesetzt sowie die Zugriffsrechte auf Oktal
 `400`, d.h. nur der Owner hat Leserechte.
 
 ```shell
     cp -r /tmp/init/* /init
-    mkdir /tablespace/patient
+    mkdir /tablespace/buch
     chown -R postgres:postgres /init /tablespace
     chmod 400 /init/*/sql/* /init/*/csv/* /init/tls/*
     ls -lR /init
@@ -107,10 +107,8 @@ der Installation leer sein muss. Deshalb wird der PostgreSQL-Server zunächst
 ohne TLS gestartet, damit `/var/lib/postgresql/19/data` initialisiert wird.
 
 Dazu muss in `compose.yml` temporär der Schlüssel `command: ...` mit den
-nachfolgenden Zeilen für den zugehörigen Wert auskommentiert werden. Außerdem
-muss die Zeilen mit dem Schlüsseln `user` auskommentiert und bei der Zeile mit
-`cap_add` der Kommentar entfernt werden. Danach wird der PostgreSQL-Server als
-_Docker-Container_ gestartet.
+nachfolgenden Zeilen für die Listenelemente auskommentiert werden. Danach
+wird der PostgreSQL-Server als _Docker-Container_ gestartet.
 
 ```shell
     # in der 1. Shell
@@ -125,23 +123,11 @@ noch ohne TLS läuft.
 
 ```shell
     # in der 2. Shell
-    docker compose exec postgres bash
-        cd /var/lib/postgresql/19/docker
-        cp /init/tls/* .
-        chown postgres:postgres server.*
-        chmod 400 server.*
-        exit
+    docker compose exec postgres bash -c 'cp /init/tls/* /var/lib/postgresql/19/data'
     docker compose down
 ```
 
-Nachdem der PostgreSQL-Container heruntergefahren ist, macht man die obigen
-Änderungen wieder rückgängig:
-
-- Kommentar beim Schlüssel `command` wieder entfernen
-- Kommentar beim Schlüssel `user` wieder entfernen
-- den Schlüssel `cap_add` wieder auskommentieren
-
-## Datenbank, Datenbank-User und Schema anlegen
+## Datenbank, Datenbank-User, Schema, Tabellen und Daten anlegen
 
 In der 1. Shell startet man wieder den DB-Server als Docker Container, und zwar
 jetzt mit TLS, d.h. in `compose.yml` muss in der Zeile `command: ...` der Kommentar
@@ -152,16 +138,29 @@ wieder entfernt werden.
 ```
 
 In der 2. Shell werden die beiden SQL-Skripte ausgeführt, um zunächst eine neue
-DB `patient` mit dem DB-User `patient`anzulegen. Mit dem 2. Skript wird das
-Schema `patient` mit dem DB-User `patient` als _Owner_ angelegt:
+DB `buch` mit dem DB-User `buch`anzulegen. Mit dem 2. Skript wird das Schema
+`buch` mit dem DB-User `buch` als _Owner_ angelegt. Abschließend werden die
+Tabellen angelegt und mit Testdaten aus den CSV-Dateien aus dem Verzeichnis
+`/init/buch/csv` im Named Volume `pg_init` gefüllt.
 
 ```shell
     docker compose exec postgres bash
-        psql --dbname=postgres --username=postgres --file=/init/patient/sql/create-db.sql
-        psql --dbname=patient --username=patient --file=/init/patient/sql/create-schema.sql
+        psql --dbname=postgres --username=postgres --file=/init/buch/sql/create-db.sql
+        psql --dbname=buch --username=buch --file=/init/buch/sql/create-schema.sql
+
+        psql --dbname=buch --username=buch --file=/init/buch/sql/create-table.sql
+        psql --dbname=buch --username=postgres --file=/init/buch/sql/copy-csv.sql
         exit
     docker compose down
 ```
+
+Die SQL-Skripte `copy-csv.sql` und `create-table.sql` im Verzeichnis
+`extras\compose\postgres\sql` sind Kopien der Original-Skripte aus dem Verzeichnis
+`src\config\resources\postgresql`, wo sie später für den _Nest_-basierten
+Appserver benötigt werden, d.h. eventuelle Änderungen müssen im Verzeichnis
+`src\config\resources\postgresql` vorgenommen werden. Durch die Kopien kann aber
+die Datenbank nach der Installation über das Named Volume mit Testdaten gefüllt
+werden kann.
 
 ## Ausgewählte Administrationskommandos für PostgreSQL
 
@@ -171,7 +170,7 @@ Zunächst muss natürlich der PostgreSQL-Server gestartet sein:
     docker compose up
 ```
 
-Danach kann man in einer zweiten Shell `psql`, d.h. das CLI von PostreSQL, aufrufen:
+Danach kann man in einer zweiten Shell `psql`, d.h. das CLI von PostgreSQL, aufrufen:
 
 ```shell
     docker compose exec postgres bash -c 'psql --dbname=postgres --username=postgres'
@@ -216,9 +215,9 @@ der dasselbe virtuelle Netzwerk nutzt wie der PostgreSQL-Server:
 ```shell
     # Windows
     cd extras\compose\debug
-
     # macOS
     cd extras/compose/debug
+
     docker compose up
 ```
 
@@ -249,9 +248,17 @@ Die Ausgabe vom Kommando `openssl` zeigt u.a. folgendes an:
 
 ## Erweiterung PostgreSQL für VS Code
 
+Für VS Code gibt übrigens auch folgende Erweiterungen:
+
+- _SQL Server (mssql)_ von _Microsoft_ mit KI-Unterstützung durch Copilot
+- _Oracle SQL Developer Extension for VS Code_ von _Oracle_ **ohne** KI-Unterstützung durch Copilot
+- Für MySQL gibt es folgende Erweiterungen:
+  - _MySQL_ von Jun Han: wird seit 2023 nicht mehr gepflegt bzw. weiterentwickelt
+  - _MySQL_ von "Database Client" (?): **ohne** KI-Unterstützung durch Copilot
+
 ### Konfiguration
 
-Mit der Erweiterung _PostgreSQL_ für VS Code kann man die Datenbank `patient` und
+Mit der Erweiterung _PostgreSQL_ für VS Code kann man die Datenbank `buch` und
 deren Daten verwalten. Man klickt man auf _+ Verbindung hinzufügen_
 und gibt beim Karteireiter _Parameter_ folgende Werte ein:
 
@@ -273,9 +280,9 @@ gibt folgende Werte ein:
 Jetzt den modalen Dialog schließen, d.h. rechts oben auf _X_ klicken, und danach
 den Button _Verbindung testen_ anklicken. Wenn dann im Button ein Haken erscheint,
 kann man den anderen Button _Save & Connect_ anklicken, um die Verbindung zu speichern.
-Im Untermenü _Databases_ von der Verbindung sieht man dann z.B. die Datenbank `patient`
-mit dem gleichnamigen Schema `patient` und die Datenbank `postgres`.
-Ebenso kann man man unter _Roles_ den DB-User `patient` und den Superuser `postgres`
+Im Untermenü _Databases_ von der Verbindung sieht man dann z.B. die Datenbank `buch`
+mit dem gleichnamigen Schema `buch` und die Datenbank `postgres`.
+Ebenso kann man man unter _Roles_ den DB-User `buch` und den Superuser `postgres`
 sehen sowie bei _Tablespaces_ den Default-Tablespace `pg_default` und den
 eigenen Tablespace.
 
@@ -289,11 +296,12 @@ Voraussetzung ist, dass die DB geöffnet ist und z.B. eine einfache Query ausgef
 Im Kontextmenü für eine DB den Menüpunkt _Mit dieser Datenbank chatten_ anklicken.
 Danach im Chat-Fenster Fragen stellen und ggf. nachhaken, z.B.:
 
-- Wie kann ich Patienten aus dem Postleitzahlengebiet "1" selektieren?
-- Den Benutzernamen benötige ich nicht.
-- Wie kann ich die Daten der 1. Abfrage als CSV exportieren?
+- Wie kann ich Bücher mit einem "a" im Titel selektieren?
+- Ich möchte die Daten der Bücher und nicht den Untertitel.
+- Jetzt fehlt aber der Buchtitel.
+- Wie kann ich diese Daten als CSV exportieren?
 
 **BEACHTE**:
 
-- _Patienten_ als Plural der DB-Tabelle `patient`.
-- _Postleitzahlengebiet "1"_ führt zu `LIKE` und der Spalte `plz`.
+- _Bücher_ mit deutschem Umlaut als Plural der DB-Tabelle `buch`.
+- Es wird auch erkannt, dass `ILIKE` anstelle von `=` benutzt werden soll.

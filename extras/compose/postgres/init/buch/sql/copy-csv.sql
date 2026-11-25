@@ -13,19 +13,11 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--- Aufruf:   psql --dbname=postgres --username=postgres --file=/init/patient/sql/create-db.sql
+-- Aufruf:   psql --dbname=buch --username=postgres --file=/init/buch/sql/copy-csv.sql
 
--- https://www.postgresql.org/docs/current/sql-createuser.html
--- https://www.postgresql.org/docs/current/sql-createrole.html
-CREATE USER patient PASSWORD 'p';
+SET search_path TO buch;
 
--- https://www.postgresql.org/docs/current/sql-createdatabase.html
-CREATE DATABASE patient;
-
--- https://www.postgresql.org/docs/current/role-attributes.html
--- https://www.postgresql.org/docs/current/ddl-priv.html
--- https://www.postgresql.org/docs/current/sql-grant.html
-GRANT ALL ON DATABASE patient TO patient;
-
--- https://www.postgresql.org/docs/current/sql-createtablespace.html
-CREATE TABLESPACE patientspace OWNER patient LOCATION '/tablespace/patient';
+-- https://www.postgresql.org/docs/current/sql-copy.html
+COPY buch FROM '/init/buch/csv/buch.csv' (FORMAT csv, DELIMITER ';', HEADER true);
+COPY titel FROM '/init/buch/csv/titel.csv' (FORMAT csv, DELIMITER ';', HEADER true);
+COPY abbildung FROM '/init/buch/csv/abbildung.csv' (FORMAT csv, DELIMITER ';', HEADER true);
