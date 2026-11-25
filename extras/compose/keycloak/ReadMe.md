@@ -40,9 +40,9 @@ gestartet:
 
 ```shell
     # Windows
-    cd extras\compose\keycloak
+    cd extras\compose\postgres
     # macOS
-    cd extras/compose/keycloak
+    cd extras/compose/postgres
 
     docker compose up
 ```
@@ -52,9 +52,9 @@ zugegriffen:
 
 ```shell
     # Windows
-    cd extras\compose\keycloak
+    cd extras\compose\postgres
     # macOS
-    cd extras/compose/keycloak
+    cd extras/compose/postgres
 
     docker compose exec postgres bash
         psql --dbname=postgres --username=postgres
