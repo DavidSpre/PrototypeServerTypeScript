@@ -42,6 +42,7 @@
     "drizzle-kit": "1.0.0-rc.6",
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
+    "tsrs": "7.1.0-beta.tsrs5",
     "tsx": "^4.23.15"
   }
 }
