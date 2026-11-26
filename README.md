@@ -10,7 +10,10 @@ pnpm install
 pnpm dev
 ```
 
-The server listens on <http://localhost:3000/>. Run it without file watching
+The server listens on <https://localhost:3000/> and negotiates HTTP/2 over TLS,
+with HTTP/1.1 fallback. It uses the local certificate in
+`extras/compose/keycloak/tls/` by default; override it with
+`TLS_CERTIFICATE_PATH` and `TLS_PRIVATE_KEY_PATH`. Run it without file watching
 with `pnpm start`.
 
 ## Book REST API
@@ -37,8 +40,9 @@ use `application/problem+json` (RFC 9457).
 
 ## Keycloak authorization
 
-`POST /api/buecher` requires a Keycloak bearer access token with the client role
-`user` for client `javascript-client`. The other book methods remain public.
+`POST /api/buecher` requires a Keycloak bearer access token for the `user`
+account with the client role `user` for client `javascript-client`. The other
+book methods remain public.
 Tokens are signature-checked against the realm's JWKS, and their issuer and
 authorized client (`azp`) are validated. Missing or invalid tokens receive
 `401`; tokens without the required client role receive `403`.
