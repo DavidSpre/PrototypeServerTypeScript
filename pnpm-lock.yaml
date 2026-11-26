@@ -183,7 +183,7 @@ importers:
         version: 18.0.10
       drizzle-orm:
         specifier: 1.0.0-rc.6
-        version: 1.0.0-rc.6(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)
+        version: 1.0.0-rc.6(@types/pg@8.23.1)(bun-types@1.4.5)(pg@8.23.1)(zod@4.6.7)
       hono:
         specifier: ^4.13.22
         version: 4.13.22
@@ -206,12 +206,24 @@ importers:
       '@tsconfig/strictest':
         specifier: ^2.0.9
         version: 2.0.9
+      '@types/bun':
+        specifier: ^1.4.5
+        version: 1.4.5
+      '@types/k6':
+        specifier: ^2.4.0
+        version: 2.4.0
+      '@types/node':
+        specifier: ^26.6.10
+        version: 26.6.10
+      '@types/nodemailer':
+        specifier: ^8.0.2
+        version: 8.0.2
       '@types/pg':
         specifier: ^8.23.1
         version: 8.23.1
       drizzle-kit:
         specifier: 1.0.0-rc.6
-        version: 1.0.0-rc.6(drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7))
+        version: 1.0.0-rc.6(drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(bun-types@1.4.5)(pg@8.23.1)(zod@4.6.7))
       node:
         specifier: runtime:26.13.1
         version: runtime:26.13.1
@@ -780,6 +792,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@types/bun@1.4.5':
+    resolution: {integrity: sha512-DpgwNI9z0L1S0gtb45QLCWgwCUcMLnsHYMJHQvpNj7erGiCGBvpggltAIeARrtobNMKMuy0UP7i56tKKgwFs/Q==}
+
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
 
@@ -789,8 +804,14 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@26.6.6':
-    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
+  '@types/k6@2.4.0':
+    resolution: {integrity: sha512-FGJAyfzNyYiSdWbMjT89k4ltFM0A2Hoq/VMUp0sBA9AjU8M0e/uilJkvv12MHW/KZ3nK3SVyv30IKD4rzjaiOg==}
+
+  '@types/node@26.6.10':
+    resolution: {integrity: sha512-WJuPHoGB8WNQuTksNF7SOQpnH02PXeDYz4iueWbBT6/hTWnShY5F3T/hoJA3fY9+uYReDZ7pyTKKx83jQa7aGg==}
+
+  '@types/nodemailer@8.0.2':
+    resolution: {integrity: sha512-c7M5ox8p0nEOfbJ2E9Qcmt8/QCu/VzsiAhzBiZbvky2PhKZDHpKB3sQHBM5MEZNkCfBOaS6S9//AGPRTNB7IaA==}
 
   '@types/pg@8.23.1':
     resolution: {integrity: sha512-fKVHpikPdg4GKks3JuLEhvwSyvwzF23hnabPy6DD8ljVbC7+6J5dQzdv4arV6jqq57djnMgs1HKBxX4P8aBI3A==}
@@ -943,6 +964,9 @@ packages:
   brace-expansion@5.1.0:
     resolution: {integrity: sha512-aa11Dv491GKnYqxaul3aRJ0szew7yMJMfZPnqD44NjGrZXoj62l41OEDDpdpC4eE2P88vBFfLuSyRhpG91NUvg==}
     engines: {node: 20 || >=22}
+
+  bun-types@1.4.5:
+    resolution: {integrity: sha512-ECHn+9dhL3wv0G6u0+7dQvrnaimXiRDxxerYBmhTaLyJEEuvTPWk2Fye3XIf5Y++JIIiHKfQw4Z7V5D8KuiXbg==}
 
   cacheable@2.5.0:
     resolution: {integrity: sha512-60cyAOytib/OzBw1JNSoSV/boK1AtHryDIjvVBk7XbN4ugfkM3+Sry7fEjNgPMGgOjuaZPAp8ruZ0Cxafwyq9g==}
@@ -1888,19 +1912,29 @@ snapshots:
   '@tsrs/win32-x64@7.1.0-beta.tsrs5':
     optional: true
 
+  '@types/bun@1.4.5':
+    dependencies:
+      bun-types: 1.4.5
+
   '@types/esrecurse@4.3.1': {}
 
   '@types/estree@1.0.10': {}
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@26.6.6':
+  '@types/k6@2.4.0': {}
+
+  '@types/node@26.6.10':
     dependencies:
       undici-types: 8.9.0
 
+  '@types/nodemailer@8.0.2':
+    dependencies:
+      '@types/node': 26.6.10
+
   '@types/pg@8.23.1':
     dependencies:
-      '@types/node': 26.6.6
+      '@types/node': 26.6.10
       pg-protocol: 1.16.1
       pg-types: 2.2.0
 
@@ -1990,6 +2024,11 @@ snapshots:
     dependencies:
       balanced-match: 4.0.4
 
+  bun-types@1.4.5:
+    dependencies:
+      '@types/node': 26.6.10
+      undici-types: 8.9.0
+
   cacheable@2.5.0:
     dependencies:
       '@cacheable/memory': 2.2.0
@@ -2012,13 +2051,14 @@ snapshots:
 
   dotenv@18.0.10: {}
 
-  drizzle-kit@1.0.0-rc.6(drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)):
+  drizzle-kit@1.0.0-rc.6(drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(bun-types@1.4.5)(pg@8.23.1)(zod@4.6.7)):
     optionalDependencies:
-      drizzle-orm: 1.0.0-rc.6(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7)
+      drizzle-orm: 1.0.0-rc.6(@types/pg@8.23.1)(bun-types@1.4.5)(pg@8.23.1)(zod@4.6.7)
 
-  drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(pg@8.23.1)(zod@4.6.7):
+  drizzle-orm@1.0.0-rc.6(@types/pg@8.23.1)(bun-types@1.4.5)(pg@8.23.1)(zod@4.6.7):
     optionalDependencies:
       '@types/pg': 8.23.1
+      bun-types: 1.4.5
       pg: 8.23.1
       zod: 4.6.7
 
