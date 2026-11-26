@@ -65,3 +65,17 @@ The Keycloak setup in the linked guide assigns the `user` client role to the
 `CLIENT_SECRET` is needed by the client when requesting a token, not by this
 API for validating one; keep it out of source control. The password grant
 described in the guide is suitable only for this local prototype.
+
+## Tests
+
+Tests run with Vitest:
+
+```sh
+pnpm test
+pnpm test:unit
+pnpm test:integration
+```
+
+Unit tests cover isolated ETag parsing. Integration tests exercise the Hono API
+with a test database and the Keycloak authorization flow against a local test
+JWKS server; they do not require a running PostgreSQL or Keycloak instance.
