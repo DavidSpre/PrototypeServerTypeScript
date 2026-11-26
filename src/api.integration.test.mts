@@ -1,7 +1,6 @@
 import { createTestApp, emptyDatabase, readJsonObject } from './api.test-support.mts';
-import { matchesIfNoneMatch, parseEntityTags } from './http/entity-tag.mts';
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { test } from 'vitest';
 
 const BAD_REQUEST = 400;
 const UNSUPPORTED_MEDIA_TYPE = 415;
@@ -102,12 +101,4 @@ test('If-Match wildcard is rejected because it cannot prevent lost updates', asy
   });
 
   assert.equal(response.status, BAD_REQUEST);
-});
-
-test('If-None-Match parsing supports weak validators and commas in tags', () => {
-  const tags = parseEntityTags('"opaque,tag", W/"current"');
-
-  assert.deepEqual(tags, ['"opaque,tag"', 'W/"current"']);
-  assert.equal(matchesIfNoneMatch(tags ?? [], '"current"'), true);
-  assert.equal(parseEntityTags('not-an-etag'), null);
 });

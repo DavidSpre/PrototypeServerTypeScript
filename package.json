@@ -10,8 +10,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "tsx --test src/api.test.mts src/api.crud.test.mts src/api.security.test.mts",
-    "lint": "oxlint",
+    "test": "vitest run",
+    "test:unit": "vitest run src/http/entity-tag.unit.test.mts",
+    "test:integration": "vitest run src/api.integration.test.mts src/api.crud.integration.test.mts src/api.security.integration.test.mts",    "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check"

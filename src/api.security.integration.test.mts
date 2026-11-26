@@ -1,5 +1,5 @@
 import { SignJWT, exportJWK, generateKeyPair } from 'jose';
-import { after, test } from 'node:test';
+import { afterAll, test } from 'vitest';
 import { emptyDatabase, sampleBook } from './api.test-support.mts';
 import { type BookDatabase } from './buch/types.mts';
 import assert from 'node:assert/strict';
@@ -90,7 +90,7 @@ const postBook = (token?: string) => {
 
 const closeJwksServer = promisify(jwksServer.close.bind(jwksServer));
 
-after(async () => {
+afterAll(async () => {
   await closeJwksServer();
 });
 

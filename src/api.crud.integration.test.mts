@@ -2,7 +2,7 @@ import { createTestApp, emptyDatabase, readJsonObject, sampleBook } from './api.
 import { type BookDatabase } from './buch/types.mts';
 import { type PatchBook } from './buch/validation.mts';
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { test } from 'vitest';
 
 const BOOK_ID = 1000;
 const RATING = 4;
