@@ -78,7 +78,8 @@ test('POST creates a book and returns its Location and ETag', async () => {
 });
 
 test('duplicate ISBN errors use Problem Details with a conflict status', async () => {
-  const duplicateError = Object.assign(new Error('duplicate ISBN'), { code: '23505' });
+  const postgresError = Object.assign(new Error('duplicate ISBN'), { code: '23505' });
+  const duplicateError = new Error('Failed query', { cause: postgresError });
   const database: BookDatabase = {
     ...emptyDatabase,
     createBook: () => Promise.reject(duplicateError),

@@ -8,8 +8,18 @@ import { requireKeycloakRole } from './auth/keycloak.mts';
 
 const BAD_REQUEST = 400;
 
-const isDatabaseCode = (error: unknown, code: string): boolean =>
-  typeof error === 'object' && error !== null && 'code' in error && error.code === code;
+const isDatabaseCode = (error: unknown, code: string): boolean => {
+  const visited = new Set<object>();
+  let current = error;
+  while (typeof current === 'object' && current !== null && !visited.has(current)) {
+    if ('code' in current && current.code === code) {
+      return true;
+    }
+    visited.add(current);
+    current = 'cause' in current ? current.cause : undefined;
+  }
+  return false;
+};
 
 export const createApp = (
   database: BookDatabase = bookDatabase,
