@@ -1,20 +1,24 @@
+import { Hono, type MiddlewareHandler } from 'hono';
 import { type BookDatabase } from './buch/types.mts';
 import { HTTPException } from 'hono/http-exception';
-import { Hono } from 'hono';
 import { bookDatabase } from './db/book-database.mts';
 import { createBookRoutes } from './buch/routes.mts';
 import { problemResponse } from './api/problem.mts';
+import { requireKeycloakRole } from './auth/keycloak.mts';
 
 const BAD_REQUEST = 400;
 
 const isDatabaseCode = (error: unknown, code: string): boolean =>
   typeof error === 'object' && error !== null && 'code' in error && error.code === code;
 
-export const createApp = (database: BookDatabase = bookDatabase): Hono => {
+export const createApp = (
+  database: BookDatabase = bookDatabase,
+  createBookAuthorization: MiddlewareHandler = requireKeycloakRole({ role: 'user' }),
+): Hono => {
   const application = new Hono();
 
   application.get('/', (c) => c.text('Hello Hono!'));
-  application.route('/api/buecher', createBookRoutes(database));
+  application.route('/api/buecher', createBookRoutes(database, createBookAuthorization));
 
   application.notFound((c) =>
     problemResponse({

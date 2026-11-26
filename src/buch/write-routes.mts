@@ -1,4 +1,4 @@
-import { type Context, Hono } from 'hono';
+import { type Context, Hono, type MiddlewareHandler } from 'hono';
 import {
   type PatchBook,
   createBookSchema,
@@ -118,8 +118,12 @@ const patchBook = async (c: Context, database: BookDatabase) => {
   return updateBook(c, id, { database, tags, fields: body.data });
 };
 
-export const registerBookWriteRoutes = (router: Hono, database: BookDatabase): void => {
-  router.post('/', (c) => createBook(c, database));
+export const registerBookWriteRoutes = (
+  router: Hono,
+  database: BookDatabase,
+  createBookAuthorization: MiddlewareHandler,
+): void => {
+  router.post('/', createBookAuthorization, (c) => createBook(c, database));
   router.put('/:id', (c) => putBook(c, database));
   router.patch('/:id', (c) => patchBook(c, database));
 };
