@@ -6,7 +6,6 @@ import {
   replaceBookSchema,
 } from './validation.mts';
 import {
-  columns,
   invalidJsonProblem,
   notFound,
   parseId,
@@ -57,30 +56,15 @@ const createBook = async (c: Context, database: BookDatabase) => {
   }
 
   const book = body.data;
-  const result = await database.query(
-    `INSERT INTO "buch"."buch" ("isbn", "rating", "art", "preis", "rabatt", "lieferbar", "datum", "homepage", "schlagwoerter")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING ${columns}`,
-    [
-      book.isbn,
-      book.rating,
-      book.art ?? null,
-      book.preis,
-      book.rabatt,
-      book.lieferbar ?? false,
-      book.datum ?? null,
-      book.homepage ?? null,
-      book.schlagwoerter ?? null,
-    ],
-  );
-  const [row] = result.rows;
-  if (row === undefined) {
+  const created = await database.createBook(book);
+  if (created === undefined) {
     throw new Error('The database did not return the inserted book');
   }
 
-  const created = toBook(row);
-  c.header('Location', `/api/buecher/${created.id}`);
-  c.header('ETag', createEntityTag(created));
-  return c.json(created, 201);
+  const responseBook = toBook(created);
+  c.header('Location', `/api/buecher/${responseBook.id}`);
+  c.header('ETag', createEntityTag(responseBook));
+  return c.json(responseBook, 201);
 };
 
 const updateBook = async (
@@ -88,49 +72,18 @@ const updateBook = async (
   id: number,
   { database, tags, fields }: UpdateInput,
 ): Promise<Response> => {
-  const currentResult = await database.query(
-    `SELECT ${columns} FROM "buch"."buch" WHERE "id" = $1`,
-    [id],
-  );
-  const [currentRow] = currentResult.rows;
-  if (currentRow === undefined) {
+  const current = await database.findBookById(id);
+  if (current === undefined) {
     return notFound(c);
   }
 
-  const currentBook = toBook(currentRow);
+  const currentBook = toBook(current);
   if (!strongTagMatches(tags, createEntityTag(currentBook))) {
     return preconditionFailed(c);
   }
 
-  const values: unknown[] = [];
-  const assignments: string[] = [];
-  for (const field of [
-    'isbn',
-    'rating',
-    'art',
-    'preis',
-    'rabatt',
-    'lieferbar',
-    'datum',
-    'homepage',
-    'schlagwoerter',
-  ] as const) {
-    if (Object.hasOwn(fields, field)) {
-      values.push(fields[field]);
-      assignments.push(`"${field}" = $${values.length}`);
-    }
-  }
-  assignments.push('"version" = "version" + 1', '"aktualisiert" = now()');
-  values.push(id, currentRow.version);
-
-  const idPosition = values.length - 1;
-  const versionPosition = values.length;
-  const result = await database.query(
-    `UPDATE "buch"."buch" SET ${assignments.join(', ')} WHERE "id" = $${idPosition} AND "version" = $${versionPosition} RETURNING ${columns}`,
-    values,
-  );
-  const [updatedRow] = result.rows;
-  return updatedRow === undefined ? preconditionFailed(c) : sendJsonWithEtag(c, toBook(updatedRow));
+  const updated = await database.updateBookIfVersionMatches(id, current.version, fields);
+  return updated === undefined ? preconditionFailed(c) : sendJsonWithEtag(c, toBook(updated));
 };
 
 const putBook = async (c: Context, database: BookDatabase) => {

@@ -10,7 +10,7 @@ export const getPool = (): Pool => {
     return pool;
   }
 
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = process.env['DATABASE_URL'];
   if (databaseUrl === undefined) {
     throw new Error('DATABASE_URL is not set');
   }
