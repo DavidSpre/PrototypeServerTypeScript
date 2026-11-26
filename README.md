@@ -70,6 +70,88 @@ The Keycloak setup in the linked guide assigns the `user` client role to the
 API for validating one; keep it out of source control. The password grant
 described in the guide is suitable only for this local prototype.
 
+## Testing the API with Bruno
+
+Before testing, set up PostgreSQL and create the `buch` database and schema as
+described in [`extras/compose/postgres/ReadMe.md`](./extras/compose/postgres/ReadMe.md).
+Set `DATABASE_URL` in the project-root `.env` file. Set up the Keycloak realm,
+client, `user` account, and `user` client role as described in
+[`extras/compose/keycloak/ReadMe.md`](./extras/compose/keycloak/ReadMe.md).
+
+Start Keycloak and PostgreSQL, then start the API in PowerShell. Node must trust
+the local self-signed Keycloak certificate so it can fetch Keycloak's signing
+keys:
+
+```powershell
+$env:NODE_EXTRA_CA_CERTS = "$PWD\extras\compose\keycloak\tls\certificate.crt"
+$env:KEYCLOAK_ISSUER = "https://localhost:8843/realms/javascript"
+$env:KEYCLOAK_CLIENT_ID = "javascript-client"
+pnpm dev
+```
+
+In Bruno, allow the local self-signed certificate for `localhost` (or add it to
+the trusted certificates) for both the API and Keycloak. Do not disable
+certificate verification for production services. Create a Bruno environment
+with these variables:
+
+```text
+baseUrl     https://localhost:3000
+keycloakUrl https://localhost:8843
+accessToken
+```
+
+### Get a Keycloak access token
+
+Create a `POST` request to
+`{{keycloakUrl}}/realms/javascript/protocol/openid-connect/token`. Under **Body**,
+select **Form URL Encoded** and add:
+
+| Key | Value |
+| --- | --- |
+| `grant_type` | `password` |
+| `client_id` | `javascript-client` |
+| `client_secret` | The secret from the `javascript-client` credentials in Keycloak |
+| `username` | `user` |
+| `password` | The password configured for that Keycloak user |
+
+Send the request and copy `access_token` from the JSON response into the
+environment's `accessToken` variable. Keep the client secret private; do not
+commit it or share it in a Bruno collection.
+
+### Send API requests
+
+- **List books:** `GET {{baseUrl}}/api/buecher`. Optional query parameters
+  include `isbn`, `rating`, `art`, `lieferbar`, `limit`, and `offset`.
+- **Get one book:** `GET {{baseUrl}}/api/buecher/{id}`. Use an ID from the list
+  response. Copy the response `ETag` header.
+- **Test conditional GET:** repeat that GET with the header
+  `If-None-Match: <copied ETag>`. The expected response is `304 Not Modified`.
+- **Create a book:** `POST {{baseUrl}}/api/buecher` with headers
+  `Authorization: Bearer {{accessToken}}` and `Content-Type: application/json`.
+  Send a JSON body such as:
+
+  ```json
+  {
+    "isbn": "978-3-16-148410-0",
+    "rating": 4,
+    "preis": 11.1,
+    "rabatt": 0.011
+  }
+  ```
+
+  Use an ISBN not already present in the database. A successful response is
+  `201 Created` and includes `Location` and `ETag` headers. A duplicate ISBN
+  returns `409 Conflict`.
+- **Update a book:** send `PATCH {{baseUrl}}/api/buecher/{id}` with
+  `Content-Type: application/json`, the current
+  `If-Match: <copied ETag>` header, and a non-empty JSON object such as
+  `{"rating": 5}`. A missing `If-Match` returns `428`; a stale ETag returns
+  `412 Precondition Failed`.
+
+Invalid input and other API errors are returned as
+`application/problem+json` (RFC 9457). Only `POST /api/buecher` requires the
+Keycloak token; the GET, PUT, and PATCH routes are public.
+
 ## Tests
 
 Tests run with Vitest:
