@@ -12,7 +12,8 @@
     "start": "tsx src/index.ts",
     "test": "vitest run",
     "test:unit": "vitest run src/http/entity-tag.unit.test.mts",
-    "test:integration": "vitest run src/api.integration.test.mts src/api.crud.integration.test.mts src/api.security.integration.test.mts",    "lint": "oxlint",
+    "test:integration": "vitest run src/api.integration.test.mts src/api.crud.integration.test.mts src/api.security.integration.test.mts",
+    "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check"
