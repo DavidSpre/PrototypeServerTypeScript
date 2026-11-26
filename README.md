@@ -34,3 +34,34 @@ GET responses include an `ETag`; send it as `If-None-Match` to receive
 check the row version, increment it, and return `412 Precondition Failed` for a
 stale ETag or `428 Precondition Required` when `If-Match` is missing. Errors
 use `application/problem+json` (RFC 9457).
+
+## Keycloak authorization
+
+`POST /api/buecher` requires a Keycloak bearer access token with the client role
+`user` for client `javascript-client`. The other book methods remain public.
+Tokens are signature-checked against the realm's JWKS, and their issuer and
+authorized client (`azp`) are validated. Missing or invalid tokens receive
+`401`; tokens without the required client role receive `403`.
+
+The defaults match the realm and client described in
+[`extras/compose/keycloak/ReadMe.md`](./extras/compose/keycloak/ReadMe.md):
+
+- `KEYCLOAK_ISSUER`: `https://localhost:8843/realms/javascript`
+- `KEYCLOAK_CLIENT_ID`: `javascript-client`
+
+For the self-signed local Keycloak certificate, set Node's additional CA
+certificate **before** starting the server (PowerShell):
+
+```powershell
+$env:NODE_EXTRA_CA_CERTS = "$PWD\extras\compose\keycloak\tls\certificate.crt"
+$env:KEYCLOAK_ISSUER = "https://localhost:8843/realms/javascript"
+$env:KEYCLOAK_CLIENT_ID = "javascript-client"
+pnpm dev
+```
+
+The Keycloak setup in the linked guide assigns the `user` client role to the
+`user` account. Obtain an access token from Keycloak and send it as
+`Authorization: Bearer <access-token>` when calling `POST /api/buecher`.
+`CLIENT_SECRET` is needed by the client when requesting a token, not by this
+API for validating one; keep it out of source control. The password grant
+described in the guide is suitable only for this local prototype.
