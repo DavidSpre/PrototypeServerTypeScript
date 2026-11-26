@@ -40,9 +40,10 @@ if (address === null || typeof address === 'string') {
 }
 const issuer = `http://127.0.0.1:${address.port}/realms/javascript`;
 
-const createToken = (roles: string[]) =>
+const createToken = (roles: string[], username = 'user') =>
   new SignJWT({
     azp: CLIENT_ID,
+    preferred_username: username,
     resource_access: {
       [CLIENT_ID]: { roles },
     },
@@ -104,6 +105,9 @@ test('only POST /api/buecher requires the Keycloak user client role', async () =
 
   const wrongRoleResponse = await postBook(await createToken(['admin']));
   assert.equal(wrongRoleResponse.status, 403);
+
+  const wrongUserResponse = await postBook(await createToken([CLIENT_ROLE], 'admin'));
+  assert.equal(wrongUserResponse.status, 403);
 
   const authorizedResponse = await postBook(await createToken([CLIENT_ROLE]));
   assert.equal(authorizedResponse.status, 201);
