@@ -3,46 +3,27 @@
   "version": "10",
   "dialect": "postgres",
   "id": "6b6d04aa-6959-4816-a729-5657e0b8d3bc",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "footprints": [
     {
       "statementType": "create_schema",
-      "statementTarget": [
-        "schema",
-        "buch"
-      ],
-      "writes": [
-        "s|sch|buch",
-        "n|sch|buch",
-        "e|sch|buch"
-      ]
+      "statementTarget": ["schema", "buch"],
+      "writes": ["s|sch|buch", "n|sch|buch", "e|sch|buch"]
     },
     {
       "statementType": "create_enum",
-      "statementTarget": [
-        "enum",
-        "buch",
-        "buchart"
-      ],
+      "statementTarget": ["enum", "buch", "buchart"],
       "writes": [
         "s|enum|buch.buchart",
         "n|enum|buch.buchart",
         "e|enum|buch.buchart",
         "n|type|buch.buchart"
       ],
-      "reads": [
-        "n|sch|buch"
-      ]
+      "reads": ["n|sch|buch"]
     },
     {
       "statementType": "create_table",
-      "statementTarget": [
-        "table",
-        "buch",
-        "abbildung"
-      ],
+      "statementTarget": ["table", "buch", "abbildung"],
       "writes": [
         "s|tbl|buch.abbildung",
         "n|tbl|buch.abbildung",
@@ -51,17 +32,11 @@
         "n|type|buch.abbildung",
         "n|rel|buch.abbildung_pkey"
       ],
-      "reads": [
-        "n|sch|buch"
-      ]
+      "reads": ["n|sch|buch"]
     },
     {
       "statementType": "create_table",
-      "statementTarget": [
-        "table",
-        "buch",
-        "buch"
-      ],
+      "statementTarget": ["table", "buch", "buch"],
       "writes": [
         "s|tbl|buch.buch",
         "n|tbl|buch.buch",
@@ -71,18 +46,11 @@
         "n|rel|buch.buch_pkey",
         "n|rel|buch.buch_isbn_key"
       ],
-      "reads": [
-        "n|sch|buch",
-        "n|enum|buch.buchart"
-      ]
+      "reads": ["n|sch|buch", "n|enum|buch.buchart"]
     },
     {
       "statementType": "create_table",
-      "statementTarget": [
-        "table",
-        "buch",
-        "buch_file"
-      ],
+      "statementTarget": ["table", "buch", "buch_file"],
       "writes": [
         "s|tbl|buch.buch_file",
         "n|tbl|buch.buch_file",
@@ -92,17 +60,11 @@
         "n|rel|buch.buch_file_pkey",
         "n|rel|buch.buch_file_buch_id_key"
       ],
-      "reads": [
-        "n|sch|buch"
-      ]
+      "reads": ["n|sch|buch"]
     },
     {
       "statementType": "create_table",
-      "statementTarget": [
-        "table",
-        "buch",
-        "titel"
-      ],
+      "statementTarget": ["table", "buch", "titel"],
       "writes": [
         "s|tbl|buch.titel",
         "n|tbl|buch.titel",
@@ -112,57 +74,33 @@
         "n|rel|buch.titel_pkey",
         "n|rel|buch.titel_buch_id_key"
       ],
-      "reads": [
-        "n|sch|buch"
-      ]
+      "reads": ["n|sch|buch"]
     },
     {
       "statementType": "create_index",
-      "statementTarget": [
-        "index",
-        "buch",
-        "abbildung",
-        "abbildung_buch_id_idx"
-      ],
+      "statementTarget": ["index", "buch", "abbildung", "abbildung_buch_id_idx"],
       "writes": [
         "s|idx|buch.abbildung_buch_id_idx",
         "n|idx|buch.abbildung_buch_id_idx",
         "e|idx|buch.abbildung_buch_id_idx",
         "n|rel|buch.abbildung_buch_id_idx"
       ],
-      "reads": [
-        "n|tbl|buch.abbildung",
-        "n|sch|buch",
-        "n|col|buch.abbildung.buch_id"
-      ]
+      "reads": ["n|tbl|buch.abbildung", "n|sch|buch", "n|col|buch.abbildung.buch_id"]
     },
     {
       "statementType": "create_index",
-      "statementTarget": [
-        "index",
-        "buch",
-        "buch_file",
-        "buch_file_buch_id_idx"
-      ],
+      "statementTarget": ["index", "buch", "buch_file", "buch_file_buch_id_idx"],
       "writes": [
         "s|idx|buch.buch_file_buch_id_idx",
         "n|idx|buch.buch_file_buch_id_idx",
         "e|idx|buch.buch_file_buch_id_idx",
         "n|rel|buch.buch_file_buch_id_idx"
       ],
-      "reads": [
-        "n|tbl|buch.buch_file",
-        "n|sch|buch",
-        "n|col|buch.buch_file.buch_id"
-      ]
+      "reads": ["n|tbl|buch.buch_file", "n|sch|buch", "n|col|buch.buch_file.buch_id"]
     },
     {
       "statementType": "create_fk",
-      "statementTarget": [
-        "table",
-        "buch",
-        "titel"
-      ],
+      "statementTarget": ["table", "buch", "titel"],
       "writes": [
         "s|fk|buch.titel.titel_buch_id_fkey",
         "n|fk|buch.titel.titel_buch_id_fkey",
@@ -181,11 +119,7 @@
     },
     {
       "statementType": "create_fk",
-      "statementTarget": [
-        "table",
-        "buch",
-        "abbildung"
-      ],
+      "statementTarget": ["table", "buch", "abbildung"],
       "writes": [
         "s|fk|buch.abbildung.abbildung_buch_id_fkey",
         "n|fk|buch.abbildung.abbildung_buch_id_fkey",
@@ -204,11 +138,7 @@
     },
     {
       "statementType": "create_fk",
-      "statementTarget": [
-        "table",
-        "buch",
-        "buch_file"
-      ],
+      "statementTarget": ["table", "buch", "buch_file"],
       "writes": [
         "s|fk|buch.buch_file.buch_file_buch_id_fkey",
         "n|fk|buch.buch_file.buch_file_buch_id_fkey",
@@ -258,11 +188,7 @@
     {
       "schema": "buch",
       "name": "buchart",
-      "values": [
-        "EPUB",
-        "HARDCOVER",
-        "PAPERBACK"
-      ],
+      "values": ["EPUB", "HARDCOVER", "PAPERBACK"],
       "entityType": "enums"
     },
     {
@@ -684,14 +610,10 @@
       "table": "titel",
       "name": "titel_buch_id_fkey",
       "nameExplicit": true,
-      "columns": [
-        "buch_id"
-      ],
+      "columns": ["buch_id"],
       "schemaTo": "buch",
       "tableTo": "buch",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "entityType": "fks"
@@ -701,14 +623,10 @@
       "table": "abbildung",
       "name": "abbildung_buch_id_fkey",
       "nameExplicit": true,
-      "columns": [
-        "buch_id"
-      ],
+      "columns": ["buch_id"],
       "schemaTo": "buch",
       "tableTo": "buch",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "entityType": "fks"
@@ -718,14 +636,10 @@
       "table": "buch_file",
       "name": "buch_file_buch_id_fkey",
       "nameExplicit": true,
-      "columns": [
-        "buch_id"
-      ],
+      "columns": ["buch_id"],
       "schemaTo": "buch",
       "tableTo": "buch",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "entityType": "fks"
@@ -734,9 +648,7 @@
       "schema": "buch",
       "table": "buch",
       "name": "buch_pkey",
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "entityType": "pks"
     },
@@ -744,9 +656,7 @@
       "schema": "buch",
       "table": "titel",
       "name": "titel_pkey",
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "entityType": "pks"
     },
@@ -754,9 +664,7 @@
       "schema": "buch",
       "table": "abbildung",
       "name": "abbildung_pkey",
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "entityType": "pks"
     },
@@ -764,9 +672,7 @@
       "schema": "buch",
       "table": "buch_file",
       "name": "buch_file_pkey",
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": true,
       "entityType": "pks"
     },
@@ -775,9 +681,7 @@
       "table": "buch",
       "name": "buch_isbn_key",
       "nameExplicit": true,
-      "columns": [
-        "isbn"
-      ],
+      "columns": ["isbn"],
       "nullsNotDistinct": false,
       "entityType": "uniques"
     },
@@ -786,9 +690,7 @@
       "table": "titel",
       "name": "titel_buch_id_key",
       "nameExplicit": true,
-      "columns": [
-        "buch_id"
-      ],
+      "columns": ["buch_id"],
       "nullsNotDistinct": false,
       "entityType": "uniques"
     },
@@ -797,9 +699,7 @@
       "table": "buch_file",
       "name": "buch_file_buch_id_key",
       "nameExplicit": true,
-      "columns": [
-        "buch_id"
-      ],
+      "columns": ["buch_id"],
       "nullsNotDistinct": false,
       "entityType": "uniques"
     },

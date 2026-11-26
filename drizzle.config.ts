@@ -21,18 +21,18 @@ import process from 'node:process';
 
 const { DATABASE_URL } = process.env;
 if (DATABASE_URL === undefined) {
-    throw new Error('DATABASE_URL ist nicht gesetzt in .env');
+  throw new Error('DATABASE_URL ist nicht gesetzt in .env');
 }
 
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
-    dialect: 'postgresql',
-    dbCredentials: {
-        url: DATABASE_URL,
-    },
-    schemaFilter: ['buch'],
-    out: './drizzle',
+  dialect: 'postgresql',
+  dbCredentials: {
+    url: DATABASE_URL,
+  },
+  schemaFilter: ['buch'],
+  out: './drizzle',
 
-    // fuer Drizzle Studio
-    schema: 'src/db/schema.mts',
+  // fuer Drizzle Studio
+  schema: 'src/db/schema.mts',
 });
