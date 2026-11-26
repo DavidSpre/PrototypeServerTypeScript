@@ -5,11 +5,13 @@ import process from 'node:process';
 
 const DEFAULT_ISSUER = 'https://localhost:8843/realms/javascript';
 const DEFAULT_CLIENT_ID = 'javascript-client';
+const DEFAULT_USERNAME = 'user';
 const SERVICE_UNAVAILABLE = 503;
 const UNAVAILABLE_JWKS_ERRORS = new Set(['ERR_JWKS_INVALID', 'ERR_JWKS_TIMEOUT']);
 
 type KeycloakRoleOptions = {
   role: string;
+  username?: string;
   issuer?: string;
   clientId?: string;
 };
@@ -107,6 +109,7 @@ const hasClientRole = (payload: JWTPayload, clientId: string, role: string): boo
 
 export const requireKeycloakRole = ({
   role,
+  username = DEFAULT_USERNAME,
   issuer = process.env['KEYCLOAK_ISSUER'] ?? DEFAULT_ISSUER,
   clientId = process.env['KEYCLOAK_CLIENT_ID'] ?? DEFAULT_CLIENT_ID,
 }: KeycloakRoleOptions): MiddlewareHandler => {
@@ -130,11 +133,14 @@ export const requireKeycloakRole = ({
     if ('response' in verification) {
       return verification.response;
     }
-    if (!hasClientRole(verification.payload, clientId, role)) {
+    if (
+      verification.payload['preferred_username'] !== username ||
+      !hasClientRole(verification.payload, clientId, role)
+    ) {
       return authorizationProblem({
         status: 403,
         title: 'Forbidden',
-        detail: 'The access token does not grant the required client role.',
+        detail: 'The access token does not identify the authorized user and client role.',
         instance: context.req.path,
       });
     }
