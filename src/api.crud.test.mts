@@ -1,8 +1,7 @@
-import { emptyDatabase, readJsonObject, sampleBook } from './api.test-support.mts';
+import { createTestApp, emptyDatabase, readJsonObject, sampleBook } from './api.test-support.mts';
 import { type BookDatabase } from './buch/types.mts';
 import { type PatchBook } from './buch/validation.mts';
 import assert from 'node:assert/strict';
-import { createApp } from './app.mts';
 import { test } from 'node:test';
 
 const BOOK_ID = 1000;
@@ -17,7 +16,7 @@ test('GET book responses include an ETag and honor If-None-Match', async () => {
     ...emptyDatabase,
     findBookById: () => Promise.resolve(sampleBook),
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const firstResponse = await api.request('/api/buecher/1000');
   const etag = firstResponse.headers.get('ETag');
 
@@ -40,7 +39,7 @@ test('GET query parameters become database filters and pagination', async () => 
       return Promise.resolve([]);
     },
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const response = await api.request(
     `/api/buecher?isbn=978-3-897-22583-1&rating=${RATING}&art=EPUB&lieferbar=true&limit=${PAGE_LIMIT}&offset=${PAGE_OFFSET}`,
   );
@@ -61,7 +60,7 @@ test('POST creates a book and returns its Location and ETag', async () => {
     ...emptyDatabase,
     createBook: () => Promise.resolve(sampleBook),
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const response = await api.request('/api/buecher', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -84,7 +83,7 @@ test('duplicate ISBN errors use Problem Details with a conflict status', async (
     ...emptyDatabase,
     createBook: () => Promise.reject(duplicateError),
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const response = await api.request('/api/buecher', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -122,7 +121,7 @@ test('PATCH persists the expected row version and returns the updated resource',
       return Promise.resolve(updatedBook);
     },
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const getResponse = await api.request(`/api/buecher/${BOOK_ID}`);
   const etag = getResponse.headers.get('ETag');
   assert.ok(etag);
@@ -151,7 +150,7 @@ test('PATCH rejects a stale If-Match without updating the resource', async () =>
       return Promise.resolve(undefined);
     },
   };
-  const api = createApp(database);
+  const api = createTestApp(database);
   const response = await api.request(`/api/buecher/${BOOK_ID}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'If-Match': '"stale"' },

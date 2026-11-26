@@ -1,13 +1,12 @@
-import { emptyDatabase, readJsonObject } from './api.test-support.mts';
+import { createTestApp, emptyDatabase, readJsonObject } from './api.test-support.mts';
 import { matchesIfNoneMatch, parseEntityTags } from './http/entity-tag.mts';
 import assert from 'node:assert/strict';
-import { createApp } from './app.mts';
 import { test } from 'node:test';
 
 const BAD_REQUEST = 400;
 const UNSUPPORTED_MEDIA_TYPE = 415;
 const UNPROCESSABLE_CONTENT = 422;
-const testApp = createApp(emptyDatabase);
+const testApp = createTestApp(emptyDatabase);
 
 test('book routes return Problem Details for invalid path parameters', async () => {
   const response = await testApp.request('/api/buecher/not-an-id');

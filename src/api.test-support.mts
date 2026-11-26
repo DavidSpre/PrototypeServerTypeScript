@@ -1,4 +1,6 @@
 import { type BookDatabase, type BookRow } from './buch/types.mts';
+import { type MiddlewareHandler } from 'hono';
+import { createApp } from './app.mts';
 
 type JsonBody = { type?: string; status?: number; errors?: unknown; version?: number };
 
@@ -46,3 +48,8 @@ export const emptyDatabase: BookDatabase = {
   createBook: () => Promise.resolve(undefined),
   updateBookIfVersionMatches: () => Promise.resolve(undefined),
 };
+
+const allowTestRequest: MiddlewareHandler = (_context, next) => next();
+
+export const createTestApp = (database: BookDatabase = emptyDatabase) =>
+  createApp(database, allowTestRequest);
