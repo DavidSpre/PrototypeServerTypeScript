@@ -44,7 +44,12 @@ export default defineConfig({
     node: true,
   },
 
-  ignorePatterns: ['drizzle.config.ts', 'test/lasttest/script.ts', 'extras/doc/api/*.js'],
+  ignorePatterns: [
+    'drizzle.config.ts',
+    'test/lasttest/script.ts',
+    'extras/doc/api/*.js',
+    'src/db/relations.mts',
+  ],
 
   // https://oxc.rs/docs/guide/usage/linter/config-file-reference.html#options
   options: {
@@ -399,6 +404,23 @@ export default defineConfig({
   },
 
   overrides: [
+    {
+      files: ['src/db/schema.mts', 'drizzle/schema.ts'],
+      rules: {
+        'no-unused-vars': 'off',
+        'no-use-before-define': 'off',
+        'sort-imports': 'off',
+      },
+    },
+    {
+      files: ['src/db/relations.mts', 'drizzle/relations.ts'],
+      rules: {
+        'arrow-body-style': 'off',
+        'id-length': 'off',
+        'import/no-namespace': 'off',
+        'sort-imports': 'off',
+      },
+    },
     {
       files: ['src/*/service/**/*.test.mts', 'test/integration/*/*.test.mts'],
 

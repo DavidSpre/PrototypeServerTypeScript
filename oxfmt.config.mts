@@ -35,6 +35,10 @@ export default defineConfig({
     'src/config/resources/postgresql/*.sql',
     'src/config/resources/tls/*.crt',
     'src/config/resources/tls/*.pem',
+    'src/db/schema.mts',
+    'src/db/relations.mts',
+    'drizzle/schema.ts',
+    'drizzle/relations.ts',
   ],
 
   // von .editorconfig übernommen:

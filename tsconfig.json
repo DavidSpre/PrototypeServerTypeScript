@@ -4,12 +4,9 @@
   // https://github.com/tsconfig/bases/#node-26-tsconfigjson
   // https://stackoverflow.com/questions/63742790/unable-to-import-esm-ts-module-in-node/65163089#65163089
   // https://2ality.com/2025/01/tsconfig-json.html
-  "extends": [
-    "@tsconfig/strictest/tsconfig",
-    "@tsconfig/node26/tsconfig",
-    "@tsconfig/node-ts"
-  ],
+  "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node26/tsconfig", "@tsconfig/node-ts"],
   "include": ["src/**/*", "test/**/*", "scripts/*"],
+  "exclude": ["src/db/relations.mts"],
   "compilerOptions": {
     // uebersetzter JS-Code im Hinblick auf Module. "nodenext" erfordert dasselbe fuer "moduleResolution"
     "module": "nodenext",
@@ -31,6 +28,8 @@
     "incremental": true,
     // "isolatedModules": true, // strictest: fuer Single-file transpiler https://www.typescriptlang.org/tsconfig/#isolatedModules
     "noErrorTruncation": true,
+    // Oxlint checks unused imports in the protected DB schema separately.
+    "noUnusedLocals": false,
     // "noFallthroughCasesInSwitch": true, // strictest: "break" muss bei switch vorhanden sein
     // "noImplicitAny": true, // strict (s.u.): Fehler bei implizitem Typ "any"
     // "noImplicitOverride": true, // strictest: Schluesselwort "override"
