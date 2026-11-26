@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsx --test src/api.test.mts",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
@@ -21,16 +21,21 @@
     "dotenv": "^18.0.10",
     "drizzle-orm": "1.0.0-rc.6",
     "hono": "^4.13.22",
-    "pg": "^8.23.1"
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^6.0.1",
+    "@tsconfig/node-ts": "^23.6.5",
+    "@tsconfig/node26": "^26.0.2",
+    "@tsconfig/strictest": "^2.0.9",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "1.0.0-rc.6",
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
     "tsrs": "7.1.0-beta.tsrs5",
-    "tsx": "^4.23.15"
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   },
   "devEngines": {
     "packageManager": {
